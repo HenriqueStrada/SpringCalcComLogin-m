@@ -13,34 +13,33 @@ public class LoginController {
     private UserRepository userRepository;
 
     @PostMapping("/processForm")
-    public ModelAndView processForm(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("action") String action) {
-        ModelAndView modelAndView = new ModelAndView("index");
-
+    public String processForm(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("action") String action, Model model) {
         User newUser = new User();
 
         if ("register".equals(action)) {
             if (userRepository.findByUsername(username) != null) {
-                modelAndView.addObject("message", "Usuário já existe. Por favor, escolha outro nome de usuário.");
+                model.addAttribute("message", "Usuário já existe. Por favor, escolha outro nome de usuário.");
             } else {
                 newUser.setUsername(username);
                 newUser.setPassword(password);
                 userRepository.save(newUser);
-                modelAndView.addObject("message", "Usuário registrado com sucesso!");
+                model.addAttribute("message", "Usuário registrado com sucesso!");
             }
         } else if ("login".equals(action)) {
             User user = userRepository.findByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
-                modelAndView.addObject("username", username); // Adiciona o nome de usuário ao modelo
-                modelAndView.addObject("message", "Login bem sucedido!");
+                model.addAttribute("username", username); // Adiciona o nome de usuário ao modelo
+                model.addAttribute("message", "Login bem sucedido!");
             } else {
-                modelAndView.addObject("message", "Falha no login. Por favor, tente novamente.");
+                model.addAttribute("message", "Falha no login. Por favor, tente novamente.");
             }
         } else {
-            modelAndView.addObject("message", "Ação inválida.");
+            model.addAttribute("message", "Ação inválida.");
         }
 
-        return modelAndView;
+        return "redirect:/home?username=" + username;
     }
+
 
     @GetMapping("/home")
     public String home(Model model, @RequestParam(value = "username", required = false) String username) {
