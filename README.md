@@ -2,7 +2,7 @@
 
 ## Recomendado baixar o arquivo em zip para melhor funcionamento
 
-## Tabela do Banco de Dados:
+## Tabela do Banco de Dados MySQL:
 
 ```sql
 create database userdb;
